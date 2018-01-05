@@ -59,4 +59,5 @@ som_results=run_experiment()
 #%prun -l 10 -s cumulative run_experiment()
 %load_ext line_profiler
 import sys
+import pprint
 print(sys.path)
