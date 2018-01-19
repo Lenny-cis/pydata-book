@@ -7,10 +7,12 @@ Created on Tue Jan 16 18:06:46 2018
 
 #learnC6
 import pandas as pd
+from pandas import DataFrame
 import numpy as np
 import sys
 import csv
 import json
+import pyodbc
 
 !type .\\examples\\ex1.csv
 df=pd.read_csv('examples\\ex1.csv')
@@ -123,24 +125,13 @@ frame.to_pickle('examples\\frame_pickle')
 pd.read_pickle('examples\\frame_pickle')
 !del .\\examples\\frame_pickle
 
-import cx_Oracle                                          #引用模块cx_Oracle
-def query(table)
-
-    host = "137.168.99.113"    #数据库ip
-    port = "1521"     #端口
-    sid = "CRM"    #数据库名称
-    dsn = cx_Oracle.makedsn(host, port, sid)
-
-    #scott是数据用户名，tiger是登录密码（默认用户名和密码）
-    conn = cx_Oracle.connect("ljn", "p@ssw0rd", dsn)  
-
-    #SQL语句，可以定制，实现灵活查询
-    sql = 'select * from '+ table 
-
-    # 使用pandas 的read_sql函数，可以直接将数据存放在dataframe中
-    results = pd.read_sql(sql,conn) 
-
-    conn.close
-    return results
-
-test_data = query(province) # 可以得到结果集
+conn = pyodbc.connect(r'DRIVER={SQL Server};SERVER=137.168.99.113;DATABASE=crm;UID=ljn;PWD=p@ssw0rd')
+cursor = conn.cursor()
+sql="select * from institution"
+df = pd.read_sql(sql,conn,)
+aa=pd.DataFrame(df)
+aa[:1]
+aa.to_csv('examples\\aa.csv')
+!del .\\examples\\aa.csv
+cursor.close()
+conn.close()
